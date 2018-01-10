@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>AI Challenger 场景分类 | DDay's blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">AI Challenger 场景分类</h1><a id="logo" href="/.">DDay's blog</a><p class="description"> GET HANDS DIRTY AND MAKE IT PRETTY.</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">AI Challenger 场景分类</h1><div class="post-meta">Nov 15, 2017<span> | </span><span class="category"><a href="/categories/项目整理/">项目整理</a></span></div><div class="clear"><div id="toc" class="toc-article"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-题目简介"><span class="toc-number">1.</span> <span class="toc-text">1. 题目简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-数据说明"><span class="toc-number">2.</span> <span class="toc-text">2. 数据说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-任务目标"><span class="toc-number">3.</span> <span class="toc-text">3. 任务目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-数据处理"><span class="toc-number">4.</span> <span class="toc-text">4. 数据处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-模型训练"><span class="toc-number">5.</span> <span class="toc-text">5. 模型训练</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-结果"><span class="toc-number">6.</span> <span class="toc-text">6. 结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#附录1：运行流程"><span class="toc-number">7.</span> <span class="toc-text">附录1：运行流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#附录2：各个程序文件的作用"><span class="toc-number">8.</span> <span class="toc-text">附录2：各个程序文件的作用</span></a></li></ol></div></div><div class="post-content"><p>本文主要是记录在 AWS 上用 PyTorch 框架尝试做 AI Challenger 场景分类比赛的流程。</p>
+<a id="more"></a>
+<h2 id="1-题目简介"><a href="#1-题目简介" class="headerlink" title="1. 题目简介"></a>1. 题目简介</h2><ul>
+<li><a href="https://challenger.ai/competition/scene" target="_blank" rel="noopener">官网</a>  </li>
+<li>如何根据图像的视觉内容为图像赋予一个语义类别（例如，教室、街道等）是图像场景分类的目标，也是图像检索、图像内容分析和目标识别等问题的基础。但由于图片的尺度、角度、光照等因素的多样性以及场景定义的复杂性，场景分类一直是计算机视觉中的一个挑战性问题。</li>
+<li>8 万张图片，分属于 80 个日常场景类别，例如航站楼，足球场等。每个场景类别包含 600-1100 张图片。数据集分为训练 (70%)、验证 (10%)、测试 A (10%)与测试 B (10%)四部分。</li>
+</ul>
+<h2 id="2-数据说明"><a href="#2-数据说明" class="headerlink" title="2. 数据说明"></a>2. 数据说明</h2><ul>
+<li>训练标注数据包含照片 id 和所属场景类别标签号。训练数据文件与验证数据文件的结构如下所示：</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"image_id"</span>:<span class="string">"5d11cf5482c2cccea8e955ead0bec7f577a98441.jpg"</span>,</span><br><span class="line">        <span class="attr">"label_id"</span>: <span class="number">0</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"image_id"</span>:<span class="string">"7b6a2330a23849fb2bace54084ae9cc73b3049d3.jpg"</span>,</span><br><span class="line">        <span class="attr">"label_id"</span>: <span class="number">11</span></span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>label_id 有场景的中英文对照，例如 label_id 为 0，表示航站楼，airport_terminal。</li>
+</ul>
+<h2 id="3-任务目标"><a href="#3-任务目标" class="headerlink" title="3. 任务目标"></a>3. 任务目标</h2><ul>
+<li>以 json 格式提交预测结果：</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"image_id"</span>:<span class="string">"a0563eadd9ef79fcc137e1c60be29f2f3c9a65ea.jpg"</span>,</span><br><span class="line">        <span class="attr">"label_id"</span>: [<span class="number">5</span>,<span class="number">18</span>,<span class="number">32</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"image_id"</span>:<span class="string">"b5a9a726c9d752d8ac1c722182512d33e66a6f88.jpg"</span>,</span><br><span class="line">        <span class="attr">"label_id"</span>: [<span class="number">6</span>,<span class="number">33</span>,<span class="number">35</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>评价的标准以算法在测试集图片上的预测正确率作为最终评价标准，总体正确率函数S为：</li>
+</ul>
+<p>$$S=\cfrac{1}{N}\sum\limits^N_{i=1}p_i$$</p>
+<p>其中，N 为测试集图片数目，$p_i$ 为第 i 张图片的准确度。以置信度递减的顺序提供三个分类的标签号，记为 $l_j,j=1,2,3$。对图片i的真实标签值记为 $g_i$ ,如果三个预测标签中包含真实标签值，则预测准确度为 1，否则准确度为 0，即：</p>
+<p>$$p_i=\min\limits_jd(l_i,g_i)$$</p>
+<p>当 $l_i=g_i$时，$d(l_i,g_i)=1$ ，否则为 0。</p>
+<h2 id="4-数据处理"><a href="#4-数据处理" class="headerlink" title="4. 数据处理"></a>4. 数据处理</h2><ul>
+<li>程序 data_process.py 将 json 文件生成二进制 scene.pth，包含 train，test，val，id2label 的信息。</li>
+<li>计算图像均值和方差</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">r = <span class="number">0</span> <span class="comment"># r mean</span></span><br><span class="line">g = <span class="number">0</span> <span class="comment"># g mean</span></span><br><span class="line">b = <span class="number">0</span> <span class="comment"># b mean</span></span><br><span class="line">r_2 = <span class="number">0</span> <span class="comment"># r^2</span></span><br><span class="line">g_2 = <span class="number">0</span> <span class="comment"># g^2</span></span><br><span class="line">b_2 = <span class="number">0</span> <span class="comment"># b^2</span></span><br><span class="line">total = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> img_name <span class="keyword">in</span> img_list:</span><br><span class="line">    img = mx.image.imread(path + img_name) <span class="comment"># ndarray, width x height x 3</span></span><br><span class="line">    img = img.astype(<span class="string">'float32'</span>) / <span class="number">255.</span></span><br><span class="line">    total += img.shape[<span class="number">0</span>] * img.shape[<span class="number">1</span>]</span><br><span class="line"> </span><br><span class="line">    r += img[:, :, <span class="number">0</span>].sum().asscalar()</span><br><span class="line">    g += img[:, :, <span class="number">1</span>].sum().asscalar()</span><br><span class="line">    b += img[:, :, <span class="number">2</span>].sum().asscalar()</span><br><span class="line"> </span><br><span class="line">    r_2 += (img[:, :, <span class="number">0</span>]**<span class="number">2</span>).sum().asscalar()</span><br><span class="line">    g_2 += (img[:, :, <span class="number">1</span>]**<span class="number">2</span>).sum().asscalar()</span><br><span class="line">    b_2 += (img[:, :, <span class="number">2</span>]**<span class="number">2</span>).sum().asscalar()</span><br><span class="line">r_mean = r / total</span><br><span class="line">g_mean = g / total</span><br><span class="line">b_mean = b / total</span><br><span class="line">r_var = r_2 / total - r_mean ** <span class="number">2</span></span><br><span class="line">g_var = g_2 / total - g_mean ** <span class="number">2</span></span><br><span class="line">b_var = b_2 / total - b_mean ** <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>定义 ClsDataset 的 <code>__getitem__</code> 方法，通过 scene.pth 和 train_dir, val_dir, test<em>dir 的信息，使用 `input, label, </em> = data<code>获得训练集和验证集的图片数据和标签，使用</code>input, label, image_ids = data` 获得测试集的图片数据，标签和 ID 信息。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClsDataSet</span><span class="params">(gl.data.Dataset)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, json_file, img_path, transform)</span>:</span></span><br><span class="line">        self._img_path = img_path</span><br><span class="line">        self._transform = transform</span><br><span class="line">        <span class="keyword">with</span> open(json_file, <span class="string">'r'</span>) <span class="keyword">as</span> f:</span><br><span class="line">            annotation_list = json.load(f)</span><br><span class="line">        self._img_list = [[i[<span class="string">'image_id'</span>], i[<span class="string">'label_id'</span>]]</span><br><span class="line">                          <span class="keyword">for</span> i <span class="keyword">in</span> annotation_list]</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getitem__</span><span class="params">(self, idx)</span>:</span></span><br><span class="line">        img_name = self._img_list[idx][<span class="number">0</span>]</span><br><span class="line">        label = np.float32(self._img_list[idx][<span class="number">1</span>])</span><br><span class="line">        img = mx.image.imread(os.path.join(self._img_path, img_name))</span><br><span class="line">        img = self._transform(img)</span><br><span class="line">        <span class="keyword">return</span> img, label</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__len__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> len(self._img_list)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>验证集/测试集  transforms 包括：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">normalize = transforms.Normalize(mean=[<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>],</span><br><span class="line">                                     std=[<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">val_transforms =  transforms.Compose([</span><br><span class="line">            transforms.Scale(opt.img_size),</span><br><span class="line">            transforms.CenterCrop(opt.img_size),</span><br><span class="line">            transforms.ToTensor(),</span><br><span class="line">            normalize,</span><br><span class="line">        ])</span><br></pre></td></tr></table></figure>
+<ul>
+<li>训练集 transforms 包括随机裁剪，随机水平翻转，归一化：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">normalize = transforms.Normalize(mean=[<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>],</span><br><span class="line">                                     std=[<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">train_transforms =  transforms.Compose([</span><br><span class="line">            transforms.RandomSizedCrop(opt.img_size),</span><br><span class="line">            transforms.RandomHorizontalFlip(),</span><br><span class="line">            transforms.ToTensor(),</span><br><span class="line">            normalize,</span><br><span class="line">        ])</span><br></pre></td></tr></table></figure>
+<h2 id="5-模型训练"><a href="#5-模型训练" class="headerlink" title="5. 模型训练"></a>5. 模型训练</h2><ul>
+<li>超参数配置</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">超参数</th>
+<th style="text-align:center">数值</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">img_size</td>
+<td style="text-align:center">256</td>
+<td style="text-align:center">处理后的图像尺寸</td>
+</tr>
+<tr>
+<td style="text-align:center">lr1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">（如果用了预训练模型）特征层学习率</td>
+</tr>
+<tr>
+<td style="text-align:center">lr2</td>
+<td style="text-align:center">0.0005</td>
+<td style="text-align:center">分类层学习率</td>
+</tr>
+<tr>
+<td style="text-align:center">lr_decay</td>
+<td style="text-align:center">0.5</td>
+<td style="text-align:center">学习率衰减</td>
+</tr>
+<tr>
+<td style="text-align:center">batch_size</td>
+<td style="text-align:center">128</td>
+<td style="text-align:center">批大小</td>
+</tr>
+<tr>
+<td style="text-align:center">max_epoch</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">最大数据集迭代次数</td>
+</tr>
+<tr>
+<td style="text-align:center">shuffle</td>
+<td style="text-align:center">True</td>
+<td style="text-align:center">DataLoader时的混洗操作</td>
+</tr>
+<tr>
+<td style="text-align:center">plot_every</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">每十步看一次结果</td>
+</tr>
+<tr>
+<td style="text-align:center">workers</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">CPU 多线程加载数据</td>
+</tr>
+<tr>
+<td style="text-align:center">loss</td>
+<td style="text-align:center">‘celoss’</td>
+<td style="text-align:center"><code>torch.nn.CrossEntropyLoss()</code></td>
+</tr>
+<tr>
+<td style="text-align:center">model</td>
+<td style="text-align:center">‘resnet34’</td>
+<td style="text-align:center">默认加载模型</td>
+</tr>
+<tr>
+<td style="text-align:center">load_path</td>
+<td style="text-align:center">None</td>
+<td style="text-align:center">默认不加载预训练模型</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Adam 优化算法</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_optimizer</span><span class="params">(self, lr1, lr2)</span>:</span></span><br><span class="line">        self.optimizer =  torch.optim.Adam(</span><br><span class="line">            [</span><br><span class="line">             &#123;<span class="string">'params'</span>: self.features.parameters(), <span class="string">'lr'</span>: lr1&#125;,</span><br><span class="line">             &#123;<span class="string">'params'</span>: self.classifier.parameters(), <span class="string">'lr'</span>:lr2&#125;</span><br><span class="line">            ] )</span><br><span class="line">        <span class="keyword">return</span> self.optimizer</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 ResNet-34 模型训练</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">resnet34</span><span class="params">(opt)</span>:</span></span><br><span class="line">    model = torchvision.models.resnet34(pretrained=<span class="keyword">not</span> opt.load_path)</span><br><span class="line">    <span class="keyword">return</span> ResNet(model, opt, feature_dim=<span class="number">512</span>, name=<span class="string">'res34'</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 Place365 的预训练模型 ResNet-50</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">resnet365</span><span class="params">(opt)</span>:</span></span><br><span class="line">    model = torch.load(<span class="string">'checkpoints/whole_resnet50_places365.pth.tar'</span>)</span><br><span class="line">    <span class="keyword">return</span> ResNet(model, opt, name=<span class="string">'res_365'</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="6-结果"><a href="#6-结果" class="headerlink" title="6. 结果"></a>6. 结果</h2><ul>
+<li>ResNet-34 模型训练的结果：在测试集上得到 93.8 % 的准确率。</li>
+<li>使用 Place365 的预训练模型 ResNet-50 在测试集上达到 95.7 % 的准确率。</li>
+<li>最终排名前 30% 左右，考虑到一直在使用的云服务器，后面也就没有继续调参以及模型融合。</li>
+</ul>
+<h2 id="附录1：运行流程"><a href="#附录1：运行流程" class="headerlink" title="附录1：运行流程"></a>附录1：运行流程</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -i "aws_oregon.pem" -L8888:localhost:8888 ubuntu@ec2-54-190-13-238.us-west-2.compute.amazonaws.com</span><br><span class="line">ssh -i "aws_oregon.pem" -L8097:localhost:8097 ubuntu@ec2-54-190-13-238.us-west-2.compute.amazonaws.com</span><br></pre></td></tr></table></figure>
+<ol>
+<li>新建 AWS 竞价实例</li>
+<li>更新，安装必要软件</li>
+<li>安装 CUDA 8.0, Miniconda</li>
+<li>创建 pytorch 虚拟环境</li>
+<li>Git clone 下载代码</li>
+<li>新建 data 文件夹，上传数据集</li>
+<li>新建 checkpoints 文件夹保存模型</li>
+<li>修改 utils.py 中文件的路径</li>
+</ol>
+<blockquote>
+<p>关于 Visdom：</p>
+<p>启用 Visdom 时会以为被墙，加上终端没有走sock5翻墙，会导致 connection timed out。</p>
+<p>将react-grid-layout.min.js 和 plotly-plotly.min.js这两个文件下载下来放到 …/visdom/static/js/ 中。通过百度云下载：</p>
+<p>链接: <a href="https://pan.baidu.com/s/1bo25jrD" target="_blank" rel="noopener">https://pan.baidu.com/s/1bo25jrD</a> 密码: 8uct</p>
+</blockquote>
+<h2 id="附录2：各个程序文件的作用"><a href="#附录2：各个程序文件的作用" class="headerlink" title="附录2：各个程序文件的作用"></a>附录2：各个程序文件的作用</h2><ul>
+<li><em>data.process.py</em> – 将 train，val 的 json 文件，标签文件，测试集生成二进制 scene.pth。</li>
+<li><em>dataset.py</em> – 定义 ClsDataset 类读入 train, test, val 数据集，分别定义 train 和 val/test 数据集的 transforms 方法。</li>
+<li><em>basic_module.py</em> – 封装 <code>torch.nn.Module</code>，定义 load, save, get_optimizer, update_optimizer 方法。</li>
+<li><em>loss.py</em> – 定义 loss 函数（源自 torch）。</li>
+<li><em>resnet.py</em> – 定义各个 ResNet 的网络模型 （源自 <code>torchvision.models</code>，或预训练模型文件 .pth.tar）。</li>
+<li><em>utils.py</em> – 封装 visdom 的使用，定义了评价准则的计算方法，设置当前默认超参数以及根据命令行更新参数的 parse 方法。</li>
+<li><em>main.py</em><ul>
+<li><em>train</em> – 读入参数，建立模型，定义优化方法和 loss 函数，通过 DataLoader 读入数据，迭代数据集（前向传播，后向传播，优化更新参数，计算损失和准确率，可视化结果），计算验证集分数（如果分数上升，保存模型和分数后继续；如果分数下降，降低学习率，加载回之前的最好模型），多次迭代。</li>
+<li><em>val</em> – 计算模型在验证集上的分数。</li>
+<li><em>submit</em> – 测试验证集，并生成可提交的 json 文件。</li>
+</ul>
+</li>
+</ul>
+</div><div class="tags"><a href="/tags/PyTorch/">PyTorch</a><a href="/tags/竞赛/">竞赛</a></div><div class="post-nav"><a href="/2017/12/13/AWS 上使用 MXNet 的环境配置/" class="pre">AWS 上使用 MXNet 的环境配置</a><a href="/2017/11/07/Ubuntu 下 PyTorch 的环境配置/" class="next">Ubuntu 下 PyTorch 的环境配置</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><a href="http://dday.top/">
+<img src="http://owinowxgh.bkt.clouddn.com/meblack2.jpg" alt="" border="0" style="margin-top:15px; border-radius: 300px;" width="180px"; height="180px"; >
+</a></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目整理/">项目整理</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Kaggle/" style="font-size: 15px;">Kaggle</a> <a href="/tags/MXNet/" style="font-size: 15px;">MXNet</a> <a href="/tags/Gluon/" style="font-size: 15px;">Gluon</a> <a href="/tags/PyTorch/" style="font-size: 15px;">PyTorch</a> <a href="/tags/竞赛/" style="font-size: 15px;">竞赛</a> <a href="/tags/AWS/" style="font-size: 15px;">AWS</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/GitHub/" style="font-size: 15px;">GitHub</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/NexT/" style="font-size: 15px;">NexT</a> <a href="/tags/机器学习/" style="font-size: 15px;">机器学习</a> <a href="/tags/理论/" style="font-size: 15px;">理论</a> <a href="/tags/Windows/" style="font-size: 15px;">Windows</a> <a href="/tags/吴恩达/" style="font-size: 15px;">吴恩达</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/C/" style="font-size: 15px;">C++</a> <a href="/tags/conda/" style="font-size: 15px;">conda</a> <a href="/tags/ffmpeg/" style="font-size: 15px;">ffmpeg</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/01/09/快排，归并，堆排序算法/">快排，归并，堆排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/05/终端命令整理/">终端命令整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/13/AWS 上使用 MXNet 的环境配置/">AWS 上使用 MXNet 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/15/AI Challenger 场景分类/">AI Challenger 场景分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Ubuntu 下 PyTorch 的环境配置/">Ubuntu 下 PyTorch 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/01/Kaggle - CIFAR-10 - 图像分类/">Kaggle - CIFAR-10 - 图像分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/Support Vector Machine 推导/">Support Vector Machine 推导</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（三)/">吴恩达的深度学习课程笔记（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（二）/">吴恩达的深度学习课程笔记（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（一）/">吴恩达的深度学习课程笔记（一）</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">DDay's blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" color="100,99,98" opacity="0.5" zIndex="-2" count="50" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

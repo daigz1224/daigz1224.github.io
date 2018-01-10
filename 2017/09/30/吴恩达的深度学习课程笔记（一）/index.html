@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>吴恩达的深度学习课程笔记（一） | DDay's blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">吴恩达的深度学习课程笔记（一）</h1><a id="logo" href="/.">DDay's blog</a><p class="description"> GET HANDS DIRTY AND MAKE IT PRETTY.</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">吴恩达的深度学习课程笔记（一）</h1><div class="post-meta">Sep 30, 2017<span> | </span><span class="category"><a href="/categories/机器学习/">机器学习</a></span></div><div class="clear"><div id="toc" class="toc-article"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Week-1-Introducting-to-Deep-Learning"><span class="toc-number">1.</span> <span class="toc-text">Week 1. Introducting to Deep Learning</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Week-2-Basic-of-Neural-Network-Programming"><span class="toc-number">2.</span> <span class="toc-text">Week 2. Basic of Neural Network Programming</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#The-general-framework"><span class="toc-number">2.1.</span> <span class="toc-text">The general framework</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Logistic-Regression"><span class="toc-number">2.2.</span> <span class="toc-text">Logistic Regression:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Week-3-One-Hidden-Layer-Neural-Network"><span class="toc-number">3.</span> <span class="toc-text">Week 3. One Hidden Layer Neural Network</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Chain-Rule"><span class="toc-number">3.1.</span> <span class="toc-text">Chain Rule</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Activation-Function"><span class="toc-number">3.2.</span> <span class="toc-text">Activation Function</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Folmulas-for-Computing-Derivatives"><span class="toc-number">3.3.</span> <span class="toc-text">Folmulas for Computing Derivatives</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Random-Initialization"><span class="toc-number">3.4.</span> <span class="toc-text">Random Initialization</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Week-4-Deep-Neural-Networks"><span class="toc-number">4.</span> <span class="toc-text">Week 4. Deep Neural Networks</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#FP-and-BP-for-N-Layer"><span class="toc-number">4.1.</span> <span class="toc-text">FP and BP for N Layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Why-Deep-Representation"><span class="toc-number">4.2.</span> <span class="toc-text">Why Deep Representation?</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Parameters-Vs-Hyperparameters"><span class="toc-number">4.3.</span> <span class="toc-text">Parameters Vs. Hyperparameters</span></a></li></ol></li></ol></div></div><div class="post-content"><p>本系列的目标是将 Andrew Ng 的 Deep Learning 课程整体梳理一遍，读薄课程中的基础知识和关键概念，便于回顾。文章内容大部分来自我的手写笔记，中英文混杂还请见谅。这个系列一共有五门课程，本文是本系列的第一课：<strong>Neural Network and Deep Learning</strong></p>
+<a id="more"></a>
+<p>大家好，我是 Day。听过很多道理，却依然过不好这一生。看过很多书和视频，却与进阶知识眉来眼去不敢向前。前段时间读了一个非常好的个人博客，<a href="http://wdxtub.com/" target="_blank" rel="noopener">小土刀</a>，受益匪浅，他将看过的书都整理了下来，即所谓的”读薄”，沉淀下来总是最珍贵的。</p>
+<hr>
+<h3 id="Week-1-Introducting-to-Deep-Learning"><a href="#Week-1-Introducting-to-Deep-Learning" class="headerlink" title="Week 1. Introducting to Deep Learning"></a>Week 1. Introducting to Deep Learning</h3><p><strong>Supervised Learning for Neural Network</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">INPUTX)</th>
+<th style="text-align:center">OUTPUT(Y)</th>
+<th style="text-align:center">APPICATION</th>
+<th style="text-align:center">TYPE of NN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Home Features</td>
+<td style="text-align:center">Price</td>
+<td style="text-align:center">Real Estate</td>
+<td style="text-align:center">DNN</td>
+</tr>
+<tr>
+<td style="text-align:center">Ad, user info.</td>
+<td style="text-align:center">Click on ad? (0/1)</td>
+<td style="text-align:center">Online Advertising</td>
+<td style="text-align:center">DNN</td>
+</tr>
+<tr>
+<td style="text-align:center">Image</td>
+<td style="text-align:center">Object(1,2,…,1000)</td>
+<td style="text-align:center">Photo Tagging</td>
+<td style="text-align:center">CNN</td>
+</tr>
+<tr>
+<td style="text-align:center">Audio</td>
+<td style="text-align:center">Text Transcript</td>
+<td style="text-align:center">Speech Recognition</td>
+<td style="text-align:center">RNN</td>
+</tr>
+<tr>
+<td style="text-align:center">English</td>
+<td style="text-align:center">Chinese</td>
+<td style="text-align:center">Machine Translating</td>
+<td style="text-align:center">RNN</td>
+</tr>
+<tr>
+<td style="text-align:center">Image, Radar info.</td>
+<td style="text-align:center">Position of Other Cars</td>
+<td style="text-align:center">Autonomous Driving</td>
+<td style="text-align:center">Custom, Hybrid NN</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Structured Data</strong>: things that has a defined meaning, like price, age,…</p>
+<p><strong>Unstructured Data</strong>: like pixel, raw audio, text,…</p>
+<p>深度学习逐渐热门的原因，一方面是因为计算机的计算性能的提高可以训练很大很深的网络。另一方面，大量的标签数据也让深度学习的表现越来越好。</p>
+<p>深度学习的发展就是一个 <strong>Data + Computation + Algorithms</strong> 的循环过程。</p>
+<hr>
+<h3 id="Week-2-Basic-of-Neural-Network-Programming"><a href="#Week-2-Basic-of-Neural-Network-Programming" class="headerlink" title="Week 2. Basic of Neural Network Programming"></a>Week 2. Basic of Neural Network Programming</h3><h4 id="The-general-framework"><a href="#The-general-framework" class="headerlink" title="The general framework"></a>The general framework</h4><p><strong>Components</strong>: X + Model + Cost</p>
+<p><strong>Train</strong>: </p>
+<ol>
+<li>X -&gt; X[#example, #feature]</li>
+<li>Initialize the Model’s parameters and hyperparameters</li>
+<li>Optimize the Cost based on X</li>
+<li>Choose the best Model with particular parameters and hyperparameters</li>
+</ol>
+<p><strong>Test</strong>: </p>
+<ol>
+<li>Pre-process the test sets X</li>
+<li>Model(X, parameters)</li>
+</ol>
+<h4 id="Logistic-Regression"><a href="#Logistic-Regression" class="headerlink" title="Logistic Regression:"></a>Logistic Regression:</h4><p>Given $X=\lbrace(x^{(1)},y^{(1)}), (x^{(2)},y^{(2)}),…,(x^{(m)},y^{(m)})\rbrace$, </p>
+<p>$\hat{y}^{(i)}=h_{\theta}(x)=\sigma(w^Tx^{i}+b)$, where $\sigma(z^{(i)})=\cfrac{1}{1+e^{-z^{(i)}}}$,</p>
+<p>want $\hat{y}^{(i)} \approx y^{(i)}$</p>
+<p><strong>Cost Function</strong>:</p>
+<ol>
+<li>$L(\hat{y}^{(i)},y^{(i)})=\cfrac{1}{2}(\hat{y}^{(i)}-y^{(i)})^2$, non-convex</li>
+<li><p>$L(\hat{y}^{(i)},y^{(i)})=-(y^{(i)}\log(\hat{y}^{(i)}))+(1-y^{(i)})\log(1-\hat{y}^{(i)})$, convex is better √</p>
+<p>$$J(w,b)=\cfrac{1}{m}\sum\limits^m<em>{i=1}L(\hat{y}^{(i)},y^{(i)})=-\cfrac{1}{m}\sum\limits^m</em>{i=1}[-(y^{(i)}\log(\hat{y}^{(i)}))+(1-y^{(i)})\log(1-\hat{y}^{(i)})]$$</p>
+</li>
+</ol>
+<p><strong>Gradient Descent</strong>:</p>
+<p>Want to find $w, b$ that minimize $J(w, b)$</p>
+<p>Repeat till convergence {</p>
+<p>​    $w:=w-\alpha\cfrac{dJ(w,b)}{dw}$</p>
+<p>​    $b:=b-\alpha\cfrac{dJ(w,b)}{db}$</p>
+<p>}</p>
+<p><strong>Logistic Regression with Gradient Descent</strong>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># 伪代码</span><br><span class="line">J = 0; dw1 = 0; dw2 = 0; db = 0</span><br><span class="line">W = [w1, w2]; b = 0</span><br><span class="line">for i = 1 to m:</span><br><span class="line">	z[i] = W.T*x[i] + b</span><br><span class="line">	a[i] = sigma(z[i])</span><br><span class="line">	J += -[y[i]*log(a[i]) + (1-y[i])*log(1-a[i])]</span><br><span class="line">	dz[i] = a[i] - y[i]</span><br><span class="line">	dw1 += x[i][1]*dz[i]</span><br><span class="line">	dw2 += x[i][2]*dz[i]</span><br><span class="line">	db += dz[i]</span><br><span class="line">J /= m; dw1 /= m; dw2 /= m; db /= m</span><br><span class="line">w1 := w1 - alpha*dw1</span><br><span class="line">w2 := w2 - alpha*dw2</span><br><span class="line">b := b - alpha*db</span><br><span class="line"></span><br><span class="line"># 向量化</span><br><span class="line">Z = W.T*X + b  # b在python代码中会broadcasting</span><br><span class="line">A = sigma(Z)</span><br><span class="line">dZ = A - Y</span><br><span class="line">dW = (1/m)*X*dZ.T</span><br><span class="line">db = (1/m)*sum(dZ)</span><br><span class="line">W := W - alpha*dW</span><br><span class="line">b := b - alpha*db</span><br><span class="line"></span><br><span class="line"># &quot;Whenever possible, avoid explicit for-loops.&quot;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Week-3-One-Hidden-Layer-Neural-Network"><a href="#Week-3-One-Hidden-Layer-Neural-Network" class="headerlink" title="Week 3. One Hidden Layer Neural Network"></a>Week 3. One Hidden Layer Neural Network</h3><h4 id="Chain-Rule"><a href="#Chain-Rule" class="headerlink" title="Chain Rule"></a>Chain Rule</h4><p>用链式法则进行求导运算，比如两层神经网络，隐含层只有一个节点，第一层的权重 $W^{[1]}$ 第一个输入特征的权重导数：</p>
+<p> $$dW^{[1]}_{1}=\cfrac{dL(a^{[2]},y)}{da^{[2]}}\cfrac{da^{[2]}}{dz^{[2]}}\cfrac{dz^{[2]}}{da^{[1]}}\cfrac{da^{[1]}}{dz^{[1]}}\cfrac{dz^{[1]}}{dx^{[1]}}$$</p>
+<h4 id="Activation-Function"><a href="#Activation-Function" class="headerlink" title="Activation Function"></a>Activation Function</h4><p><strong>Sigmoid</strong>: $g(z) = \cfrac{1}{1+e^{-z}}$$，$$g’(z)=g(z)(1-g(z))$</p>
+<p><strong>Tanh</strong>: $g(z) = \cfrac{e^z-e^{-z}}{e^z+e^{-z}}$, $g’(z)=1-(tanh(z))^2$</p>
+<p>Sigmoid 激活函数和 Tanh 激活函数共同的问题是：当 $z$ 过大或过小时，$g’(z)$ 将趋向于 0，这会让梯度下降算法失效。</p>
+<p><strong>ReLU</strong>: $g(z)=max(0,z)$</p>
+<p><strong>Leaky ReLU</strong>: $g(z)=max(0.01z,z)$ </p>
+<h4 id="Folmulas-for-Computing-Derivatives"><a href="#Folmulas-for-Computing-Derivatives" class="headerlink" title="Folmulas for Computing Derivatives"></a>Folmulas for Computing Derivatives</h4><p><strong>Forward Propagation</strong>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Z[1] = W[1]*X + b[1]</span><br><span class="line">A[1] = g[1](Z[1])</span><br><span class="line">Z[2] = W[2]A[1] + b[2]</span><br><span class="line">A[2] = g[2](Z[2]) = sigma(Z[2])</span><br></pre></td></tr></table></figure>
+<p><strong>Back Propagation</strong>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dZ[2] = A[2] - Y</span><br><span class="line">dW[2] = (1/m)*dZ[2]*A[1].T</span><br><span class="line">db[2] = (1/m)*np.sum(dZ[2], axis=1, keepdims=True)</span><br><span class="line">dZ[1] = W[2].T*dZ[2].*g&apos;[1](Z[1])</span><br><span class="line">dW[1] = (1/m)*dZ[1]*X.T</span><br><span class="line">db[1] = (1/m)*np.sum(dZ[1], axis=1, keepdims=True)</span><br></pre></td></tr></table></figure>
+<h4 id="Random-Initialization"><a href="#Random-Initialization" class="headerlink" title="Random Initialization"></a>Random Initialization</h4><p><strong>为什么不能初始化为 0 或其他相同的值？</strong></p>
+<p>如果权重相同，那么下一层的各个节点单元的地位就同等重要，这种对称性将一直延续，不管迭代多少次都会存在。</p>
+<p><strong>随机初始化</strong>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">W[l] = np.random.randn((2,2))*0.01  # 权重尽量小一点，这样激活函数的导数就大一点（ReLU除外）</span><br><span class="line">b[l] = zp.zeros((2,1))</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Week-4-Deep-Neural-Networks"><a href="#Week-4-Deep-Neural-Networks" class="headerlink" title="Week 4. Deep Neural Networks"></a>Week 4. Deep Neural Networks</h3><h4 id="FP-and-BP-for-N-Layer"><a href="#FP-and-BP-for-N-Layer" class="headerlink" title="FP and BP for N Layer"></a>FP and BP for N Layer</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">## FP for layer l</span><br><span class="line"># Input A[l-1]</span><br><span class="line"># Output A[l], cache(Z[l])  # cache是为了方便获得W[l], b[l]</span><br><span class="line">Z[l] = W[l]*A[l-1] + b[l]</span><br><span class="line">A[l] = g[l](Z[l])</span><br><span class="line"></span><br><span class="line">## BP for layer l</span><br><span class="line"># Input dA[l]</span><br><span class="line"># Output dA[l-1], dW[l], db[l]</span><br><span class="line">dZ[l] = dA[l].*g&apos;[l](Z[l])</span><br><span class="line">dW[l] = (1/m)*dZ[l]*A[l-1].T</span><br><span class="line">db[l] = (1/m)*np/sum(dZ[l], axis=1, leepdims=True)</span><br><span class="line">dA[l-1] = W[l].TdZ[l]</span><br></pre></td></tr></table></figure>
+<h4 id="Why-Deep-Representation"><a href="#Why-Deep-Representation" class="headerlink" title="Why Deep Representation?"></a>Why Deep Representation?</h4><ol>
+<li>Simple -&gt; Complex</li>
+<li>Circuit Theory</li>
+</ol>
+<h4 id="Parameters-Vs-Hyperparameters"><a href="#Parameters-Vs-Hyperparameters" class="headerlink" title="Parameters Vs. Hyperparameters"></a>Parameters Vs. Hyperparameters</h4><p><strong>Parameters</strong>: $W^{[l]},b^{[l]},l = 1,2,3,…,n$</p>
+<p><strong>Hyperparameters</strong>:</p>
+<ul>
+<li>Learning Rate $\alpha$</li>
+<li>num of iterations <strong>epochs</strong></li>
+<li>num of hidden layer $L$</li>
+<li>num of hidden units, $n^{[1]},n^{[2]},…$</li>
+<li>choice of activation function $g^{[1]},g^{[2]},…$</li>
+<li>momentum $\beta$</li>
+<li>mini-batch <strong>bacth_size</strong></li>
+<li>regularization $\lambda$</li>
+<li>…</li>
+</ul>
+</div><div class="tags"><a href="/tags/深度学习/">深度学习</a><a href="/tags/吴恩达/">吴恩达</a></div><div class="post-nav"><a href="/2017/09/30/吴恩达的深度学习课程笔记（二）/" class="pre">吴恩达的深度学习课程笔记（二）</a><a href="/2017/09/26/Ubuntu 配置及美化指南/" class="next">Ubuntu 配置及美化指南</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><a href="http://dday.top/">
+<img src="http://owinowxgh.bkt.clouddn.com/meblack2.jpg" alt="" border="0" style="margin-top:15px; border-radius: 300px;" width="180px"; height="180px"; >
+</a></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目整理/">项目整理</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Kaggle/" style="font-size: 15px;">Kaggle</a> <a href="/tags/MXNet/" style="font-size: 15px;">MXNet</a> <a href="/tags/Gluon/" style="font-size: 15px;">Gluon</a> <a href="/tags/PyTorch/" style="font-size: 15px;">PyTorch</a> <a href="/tags/竞赛/" style="font-size: 15px;">竞赛</a> <a href="/tags/AWS/" style="font-size: 15px;">AWS</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/GitHub/" style="font-size: 15px;">GitHub</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/NexT/" style="font-size: 15px;">NexT</a> <a href="/tags/机器学习/" style="font-size: 15px;">机器学习</a> <a href="/tags/理论/" style="font-size: 15px;">理论</a> <a href="/tags/Windows/" style="font-size: 15px;">Windows</a> <a href="/tags/吴恩达/" style="font-size: 15px;">吴恩达</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/C/" style="font-size: 15px;">C++</a> <a href="/tags/conda/" style="font-size: 15px;">conda</a> <a href="/tags/ffmpeg/" style="font-size: 15px;">ffmpeg</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/01/09/快排，归并，堆排序算法/">快排，归并，堆排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/05/终端命令整理/">终端命令整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/13/AWS 上使用 MXNet 的环境配置/">AWS 上使用 MXNet 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/15/AI Challenger 场景分类/">AI Challenger 场景分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Ubuntu 下 PyTorch 的环境配置/">Ubuntu 下 PyTorch 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/01/Kaggle - CIFAR-10 - 图像分类/">Kaggle - CIFAR-10 - 图像分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/Support Vector Machine 推导/">Support Vector Machine 推导</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（三)/">吴恩达的深度学习课程笔记（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（二）/">吴恩达的深度学习课程笔记（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（一）/">吴恩达的深度学习课程笔记（一）</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">DDay's blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" color="100,99,98" opacity="0.5" zIndex="-2" count="50" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

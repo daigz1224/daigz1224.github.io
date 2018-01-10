@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>吴恩达的深度学习课程笔记（三） | DDay's blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">吴恩达的深度学习课程笔记（三）</h1><a id="logo" href="/.">DDay's blog</a><p class="description"> GET HANDS DIRTY AND MAKE IT PRETTY.</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">吴恩达的深度学习课程笔记（三）</h1><div class="post-meta">Sep 30, 2017<span> | </span><span class="category"><a href="/categories/机器学习/">机器学习</a></span></div><div class="clear"><div id="toc" class="toc-article"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Week-1-ML-Strategy-1"><span class="toc-number">1.</span> <span class="toc-text">Week 1. ML Strategy (1)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Orthogoalization"><span class="toc-number">1.1.</span> <span class="toc-text">Orthogoalization</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Single-Number-Evaluation-Metric"><span class="toc-number">1.2.</span> <span class="toc-text">Single Number Evaluation Metric</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Satisficing-and-Optimizing-Metric"><span class="toc-number">1.3.</span> <span class="toc-text">Satisficing and Optimizing Metric</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Human-level-Performance-and-Avoidable-Bias"><span class="toc-number">1.4.</span> <span class="toc-text">Human-level Performance and Avoidable Bias</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Week-2-ML-Strategy-2"><span class="toc-number">2.</span> <span class="toc-text">Week 2. ML Strategy (2)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Error-Analysis"><span class="toc-number">2.1.</span> <span class="toc-text">Error Analysis</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Training-and-Testing-on-Different-Distributions"><span class="toc-number">2.2.</span> <span class="toc-text">Training and Testing on Different Distributions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Transfer-Learning"><span class="toc-number">2.3.</span> <span class="toc-text">Transfer Learning</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Multi-task-Learning"><span class="toc-number">2.4.</span> <span class="toc-text">Multi-task Learning</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#End-to-End-Learning"><span class="toc-number">2.5.</span> <span class="toc-text">End-to-End Learning</span></a></li></ol></li></ol></div></div><div class="post-content"><p>本系列的目标是将 Andrew Ng 的 Deep Learning 课程整体梳理一遍，读薄课程中的基础知识和关键概念，便于回顾。文章内容大部分来自我的手写笔记，中英文混杂还请见谅。这个系列一共有五门课程，本文是本系列的第三课：<strong>Structuring your ML Project</strong></p>
+<a id="more"></a>
+<p>大家好，我是 Day。听过很多道理，却依然过不好这一生。看过很多书和视频，却与进阶知识眉来眼去不敢向前。前段时间读了一个非常好的个人博客，<a href="http://wdxtub.com/" target="_blank" rel="noopener">小土刀</a>，受益匪浅，他将看过的书都整理了下来，即所谓的”读薄”，沉淀下来总是最珍贵的。</p>
+<hr>
+<h3 id="Week-1-ML-Strategy-1"><a href="#Week-1-ML-Strategy-1" class="headerlink" title="Week 1. ML Strategy (1)"></a>Week 1. ML Strategy (1)</h3><p><strong>Ideas to Modify your Model</strong>:</p>
+<ul>
+<li>Collect more data</li>
+<li>Collect more diverse training set</li>
+<li>Train algorithm longer with gradient descent</li>
+<li>Try Adam instead og gradient descent</li>
+<li>Try bigger network</li>
+<li>Try smaller network</li>
+<li>Try dropout</li>
+<li>Add L2 regularization</li>
+<li>Network architecture: Activation function, num of hidden units</li>
+</ul>
+<h4 id="Orthogoalization"><a href="#Orthogoalization" class="headerlink" title="Orthogoalization"></a>Orthogoalization</h4><p><strong>Chain of assumptions in ML</strong>:</p>
+<ul>
+<li>Fit training set well on  cost function (≈ human-level) : Bigger network, Adam…</li>
+<li>Fit dev set well on cost function: Regularization, Bigger training set…</li>
+<li>Fit test set well on cost function: Bigger dev set…</li>
+<li>Performs well in real world: Change dev set or cost function…</li>
+</ul>
+<h4 id="Single-Number-Evaluation-Metric"><a href="#Single-Number-Evaluation-Metric" class="headerlink" title="Single Number Evaluation Metric"></a>Single Number Evaluation Metric</h4><p><strong>F1 Score = Precision + Recall</strong>, like an average of percision and recall.</p>
+<p>$$F_1=\cfrac{2}{\cfrac{1}{P}+\cfrac{1}{R}}$$</p>
+<p>$P=\cfrac{TP}{TP+FP}$, $R=\cfrac{TP}{TP+TN}$</p>
+<h4 id="Satisficing-and-Optimizing-Metric"><a href="#Satisficing-and-Optimizing-Metric" class="headerlink" title="Satisficing and Optimizing Metric"></a>Satisficing and Optimizing Metric</h4><p>优化的目标是为了精度，但是也要注意网络的复杂度，过于复杂的网络在使用时不能达到实时性的要求。</p>
+<p>通常优化的目标只有一个，其他均为需要满足的条件。</p>
+<h4 id="Human-level-Performance-and-Avoidable-Bias"><a href="#Human-level-Performance-and-Avoidable-Bias" class="headerlink" title="Human-level Performance and Avoidable Bias"></a>Human-level Performance and Avoidable Bias</h4><p>机器学习的目标要接近甚至高于 Human-level，但不可能达到 Bayes Optimal。</p>
+<ul>
+<li>Get labeled data from humans</li>
+<li>Gain insight from manual error analysis</li>
+<li>Better analysis of bias / variance.</li>
+</ul>
+<p>Avoidable Bias 指的是 Training error 到 Human-level error 的距离。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">Scenario A</th>
+<th style="text-align:center">Scenario B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Human-level Error</td>
+<td style="text-align:center">1%</td>
+<td style="text-align:center">7.5%</td>
+</tr>
+<tr>
+<td style="text-align:center">Training Error</td>
+<td style="text-align:center">8%</td>
+<td style="text-align:center">8%</td>
+</tr>
+<tr>
+<td style="text-align:center">Development Error</td>
+<td style="text-align:center">10%</td>
+<td style="text-align:center">10%</td>
+</tr>
+<tr>
+<td style="text-align:center">Next Target</td>
+<td style="text-align:center">Focus on bias</td>
+<td style="text-align:center">Focus on variance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Surpassing human-level performance</strong>: expecially with structured data</p>
+<ul>
+<li>Online Advertising</li>
+<li>Produce Recommendations</li>
+<li>Logistics (like predicting transit time)</li>
+<li>Loan Approvals</li>
+</ul>
+<h3 id="Week-2-ML-Strategy-2"><a href="#Week-2-ML-Strategy-2" class="headerlink" title="Week 2. ML Strategy (2)"></a>Week 2. ML Strategy (2)</h3><h4 id="Error-Analysis"><a href="#Error-Analysis" class="headerlink" title="Error Analysis"></a>Error Analysis</h4><ul>
+<li>Look at dev examples to evaluate ideas</li>
+<li>Evaluate multiple ideas in parallel</li>
+</ul>
+<p>No need to clean up incorrectly labeled data, cause DL algorithms are quite robust to <strong>random</strong> errors in the training set.</p>
+<h4 id="Training-and-Testing-on-Different-Distributions"><a href="#Training-and-Testing-on-Different-Distributions" class="headerlink" title="Training and Testing on Different Distributions"></a>Training and Testing on Different Distributions</h4><p>如果训练集和测试集不得不来自不同分布，那么要保证验证集和测试集一定要保持一致，而且目标明确。</p>
+<p>可以设置一个<strong>训练-验证集</strong>，与训练集的分布一致，但不用于训练，只用于验证模型是否匹配训练集。</p>
+<p>对于这种 <strong>Data Mismatch</strong> 的问题，可以通过手工误差分析去理解训练集和验证测试集的区别。也可以通过让训练集更像测试集方向去预处理，比如加入噪声等人工拟合。需要注意的是，<strong>不要从所有可能的噪声空间中只选一部分去模拟，这样会导致对噪声的过拟合。</strong></p>
+<h4 id="Transfer-Learning"><a href="#Transfer-Learning" class="headerlink" title="Transfer Learning"></a>Transfer Learning</h4><p>通过大数据集的预训练学到易写基本的特征，重新初始化最后一层用于特定的小数据集的训练。</p>
+<p>什么时候迁移学习最有效？</p>
+<ul>
+<li>任务 A 和任务 B 有同样的输入 x</li>
+<li>相比较任务 B，任务 A 有大量数据集来训练。</li>
+<li>任务 A 可以学到一些低层次的，有利于任务 B 的特征。</li>
+</ul>
+<p>所以当你的训练数据不够多的时候，可以找相关问题的模型去预训练。</p>
+<h4 id="Multi-task-Learning"><a href="#Multi-task-Learning" class="headerlink" title="Multi-task Learning"></a>Multi-task Learning</h4><p>Softmax Regression: 输出的列向量只有一个 1。</p>
+<p>Multi-task Learning: 输出的列向量可以有很多 1。</p>
+<h4 id="End-to-End-Learning"><a href="#End-to-End-Learning" class="headerlink" title="End-to-End Learning"></a>End-to-End Learning</h4><p><strong>Speech Recognition</strong>:</p>
+<p><strong>Audio</strong> -MFCC-&gt; <strong>Feature</strong> -ML-&gt; <strong>Phonemes</strong> –&gt; <strong>Words</strong> –&gt; <strong>Transcript</strong></p>
+<p><strong>End-to-End Deep Learning</strong>:</p>
+<p><strong>Audio</strong> ——————————————————————&gt; <strong>Transcript</strong></p>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Let the data speak.</li>
+<li>Less hand-designing of components needed.</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>May need large amount of data.</li>
+<li>Excludes potentially useful hand-designed components.</li>
+</ul>
+</div><div class="tags"><a href="/tags/深度学习/">深度学习</a><a href="/tags/吴恩达/">吴恩达</a></div><div class="post-nav"><a href="/2017/10/01/Support Vector Machine 推导/" class="pre">Support Vector Machine 推导</a><a href="/2017/09/30/吴恩达的深度学习课程笔记（二）/" class="next">吴恩达的深度学习课程笔记（二）</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><a href="http://dday.top/">
+<img src="http://owinowxgh.bkt.clouddn.com/meblack2.jpg" alt="" border="0" style="margin-top:15px; border-radius: 300px;" width="180px"; height="180px"; >
+</a></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目整理/">项目整理</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Kaggle/" style="font-size: 15px;">Kaggle</a> <a href="/tags/MXNet/" style="font-size: 15px;">MXNet</a> <a href="/tags/Gluon/" style="font-size: 15px;">Gluon</a> <a href="/tags/PyTorch/" style="font-size: 15px;">PyTorch</a> <a href="/tags/竞赛/" style="font-size: 15px;">竞赛</a> <a href="/tags/AWS/" style="font-size: 15px;">AWS</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/GitHub/" style="font-size: 15px;">GitHub</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/NexT/" style="font-size: 15px;">NexT</a> <a href="/tags/机器学习/" style="font-size: 15px;">机器学习</a> <a href="/tags/理论/" style="font-size: 15px;">理论</a> <a href="/tags/Windows/" style="font-size: 15px;">Windows</a> <a href="/tags/吴恩达/" style="font-size: 15px;">吴恩达</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/C/" style="font-size: 15px;">C++</a> <a href="/tags/conda/" style="font-size: 15px;">conda</a> <a href="/tags/ffmpeg/" style="font-size: 15px;">ffmpeg</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/01/09/快排，归并，堆排序算法/">快排，归并，堆排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/05/终端命令整理/">终端命令整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/13/AWS 上使用 MXNet 的环境配置/">AWS 上使用 MXNet 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/15/AI Challenger 场景分类/">AI Challenger 场景分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Ubuntu 下 PyTorch 的环境配置/">Ubuntu 下 PyTorch 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/01/Kaggle - CIFAR-10 - 图像分类/">Kaggle - CIFAR-10 - 图像分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/Support Vector Machine 推导/">Support Vector Machine 推导</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（三)/">吴恩达的深度学习课程笔记（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（二）/">吴恩达的深度学习课程笔记（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（一）/">吴恩达的深度学习课程笔记（一）</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">DDay's blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" color="100,99,98" opacity="0.5" zIndex="-2" count="50" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

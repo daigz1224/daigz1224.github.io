@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Support Vector Machine 推导 | DDay's blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Support Vector Machine 推导</h1><a id="logo" href="/.">DDay's blog</a><p class="description"> GET HANDS DIRTY AND MAKE IT PRETTY.</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Support Vector Machine 推导</h1><div class="post-meta">Oct 1, 2017<span> | </span><span class="category"><a href="/categories/机器学习/">机器学习</a></span></div><div class="clear"><div id="toc" class="toc-article"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-基本概念"><span class="toc-number">1.</span> <span class="toc-text">1. 基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-线性-SVM"><span class="toc-number">2.</span> <span class="toc-text">2. 线性 SVM</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-硬间隔最大化"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 硬间隔最大化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-软间隔最大化"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 软间隔最大化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-非线性-SVM"><span class="toc-number">3.</span> <span class="toc-text">3. 非线性 SVM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文章"><span class="toc-number">4.</span> <span class="toc-text">参考文章</span></a></li></ol></div></div><div class="post-content"><p>手推 SVM，涉及到拉格朗日乘子法、KKT 条件、对偶问题、岭回归、核函数等问题。</p>
+<a id="more"></a>
+<h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1. 基本概念"></a>1. 基本概念</h2><ul>
+<li>通俗来讲，它是一种二类分类模型，其基本模型定义为特征空间上的间隔最大的线性分类器，其学习策略便是间隔最大化，最终可转化为一个凸二次规划问题的求解。</li>
+<li>设想一个多维平面上散落着正样本和负样本，如果能找到一个超平面，恰好能将正负样本分开，那么这个超平面就可以用来对样本进行分类。</li>
+<li>SVM 要解决的两个核心问题：<ul>
+<li>如果超平面确实存在，那么如何找到它？</li>
+<li>如果超平面不存在，那么如何找一个尽可能将正负样本分开的超平面？</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-线性-SVM"><a href="#2-线性-SVM" class="headerlink" title="2. 线性 SVM"></a>2. 线性 SVM</h2><h3 id="2-1-硬间隔最大化"><a href="#2-1-硬间隔最大化" class="headerlink" title="2.1 硬间隔最大化"></a>2.1 硬间隔最大化</h3><ul>
+<li>分割超平面的表达式：$wx+b=0$</li>
+<li>两边离分割超平面最近的点即支撑向量（support vector）。</li>
+<li>平行于分割超平面的支撑平面：$wx+b=1,wx+b=-1$ （因为w, b可以等比例缩放，所以右边可以等于1/-1方便计算）</li>
+<li>对于所有的训练数据，要满足 $wx<em>++b\geq 1,wx</em>-+b\leq -1$ ，即：$y(wx+b)\geq1$</li>
+<li>两个支撑平面的间隔：$width=(x<em>+-x</em>-)\frac{w}{||w||}=\frac{wx<em>+}{||w||}-\frac{wx</em>-}{||w||}=\frac{2}{||w||}$</li>
+<li>最大化间隔问题转换为一个带不等式约束的凸优化问题：</li>
+</ul>
+<p>$$min\frac{1}{2}||w||^2$$</p>
+<p>$$s.t. y_i(wx_i+b)\geq 1, i=1,2,…,m.$$</p>
+<ul>
+<li>结合 KKT 条件，拉格朗日函数可写为：</li>
+</ul>
+<p>$$L(w,b,α)=\frac{1}{2}||w||^2-\sum\limits_{i=1}^Nα_iy_i(wx<em>i+b)+\sum\limits</em>{i=1}^Nα_i$$</p>
+<ul>
+<li>问题转换为 $\min\limits<em>{w,b}\max\limits</em>{\alpha,\alpha&gt;0}L(w,b,\alpha)$ , 由于满足 Slater 定理，所以可以构造拉格朗日对偶问题：</li>
+</ul>
+<p>$$\min\limits<em>{w,b}\max\limits</em>{\alpha,\alpha&gt;0}L(w,b,\alpha) =\max\limits<em>{\alpha,\alpha&gt;0} \min\limits</em>{w,b}L(w,b,\alpha)$$</p>
+<ul>
+<li>对 w, b 分别求导等于0，可以得到：</li>
+</ul>
+<p>$$w=\sum\limits_i^Nα_iy_ix_i$$</p>
+<p>$$\sum\limits_i^Nα_iy_i=0$$</p>
+<ul>
+<li>代入到拉格朗日函数中可得：</li>
+</ul>
+<p>$$\max\limits_{\alpha}L(α)=-\frac{1}{2}\sum\limits_i^N\sum\limits_j^Nα_iα_jy_iy_j(x_i\cdot x_j)+\sum\limits_i^Nα_i$$</p>
+<p>$$s.t. \sum\limits_i^N\alpha_iy_i=0,\alpha_i\geq 0$$</p>
+<ul>
+<li>SMO 算法的基本思路：每次选择两个变量 $\alpha<em>{i}​$ 和 $\alpha</em>{j}​$ ，选取的两个变量所对应的样本之间间隔要尽可能大，因为这样更新会带给目标函数值更大的变化。</li>
+<li>SMO 算法之所以高效，是因为仅优化两个参数的过程实际上仅有一个约束条件，其中一个可由另一个表示，这样的二次规划问题具有闭式解。</li>
+</ul>
+<h3 id="2-2-软间隔最大化"><a href="#2-2-软间隔最大化" class="headerlink" title="2.2 软间隔最大化"></a>2.2 软间隔最大化</h3><ul>
+<li>由于现实中正负类样本相互交缠，不太可能严格满足线性可分。</li>
+<li>可以认为存在一些特异点（outlier），于是引入一个松弛变量（slack variables） $ξ_i\geq 0$ ，约束条件变为：</li>
+</ul>
+<p>$$y_i(wx_i+b)\geq 1-ξ_i$$</p>
+<ul>
+<li>再引入惩罚参数 $C&gt;0$ ，目标函数变成：</li>
+</ul>
+<p>$$min\frac{1}{2}||w||^2+C\sum\limits_i^Nξ_i$$</p>
+<p>$$s.t. y_i(wx_i+b)≥1-ξ_i, ξ_i\geq 0$$</p>
+<ul>
+<li>松弛变量在使用时表示的是一种损失函数，譬如岭回归（Hinge）的损失函数 $l(z)=max(0,1-z)$</li>
+</ul>
+<h2 id="3-非线性-SVM"><a href="#3-非线性-SVM" class="headerlink" title="3. 非线性 SVM"></a>3. 非线性 SVM</h2><ul>
+<li>线性 SVM 最后推导的式子可以看出，目标函数只使用了数据集两两点乘。</li>
+<li>可以用核函数代替这个点乘，实现空间的非线性映射，使得样本在高维的特征空间内线性可分。</li>
+<li>线性核函数可以降低线性 SVM 计算的复杂度，非线性核函数将特征映射到高维空间甚至无限维空间以寻找超平面。</li>
+<li>常用核函数：<ul>
+<li>线性核（Linear kernel function）：$K(x,z)=x^Tz$</li>
+<li>多项式核函数（polynomial kernel function）：$K(x,z) = (x\cdot z)^p$</li>
+<li>高斯核函数（Gaussian kernel function）：$K(x,z) = exp(-\frac{||x-z||^2}{2σ^2})$</li>
+</ul>
+</li>
+<li>目标函数变为：</li>
+</ul>
+<p>$$\min L(α) = \frac{1}{2}\sum\limits_i^N\sum\limits_j^Nα_iα_jy_iy_jK(x_i,x_j)-\sum\limits_i^Nα_i$$</p>
+<p>$$s.t. \sum\limits_i^Nα_iy_i=0, 0 \leq α_i \leq C​$$</p>
+<ul>
+<li>分割的超平面为：$\sum\limits_i^Nα_iy_iK(x,x_i)+b=0$</li>
+</ul>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a href="https://applenob.github.io/svm.html" target="_blank" rel="noopener">如何优雅地手推SVM</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/31271919" target="_blank" rel="noopener">手推SVM</a></li>
+<li><a href="https://charlesliuyx.github.io/2017/09/19/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BASVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener">直观详解】支持向量机SVM</a></li>
+</ul>
+</div><div class="tags"><a href="/tags/机器学习/">机器学习</a><a href="/tags/理论/">理论</a></div><div class="post-nav"><a href="/2017/11/01/Kaggle - CIFAR-10 - 图像分类/" class="pre">Kaggle - CIFAR-10 - 图像分类</a><a href="/2017/09/30/吴恩达的深度学习课程笔记（三)/" class="next">吴恩达的深度学习课程笔记（三）</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><a href="http://dday.top/">
+<img src="http://owinowxgh.bkt.clouddn.com/meblack2.jpg" alt="" border="0" style="margin-top:15px; border-radius: 300px;" width="180px"; height="180px"; >
+</a></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目整理/">项目整理</a><span class="category-list-count">2</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Kaggle/" style="font-size: 15px;">Kaggle</a> <a href="/tags/MXNet/" style="font-size: 15px;">MXNet</a> <a href="/tags/Gluon/" style="font-size: 15px;">Gluon</a> <a href="/tags/PyTorch/" style="font-size: 15px;">PyTorch</a> <a href="/tags/竞赛/" style="font-size: 15px;">竞赛</a> <a href="/tags/AWS/" style="font-size: 15px;">AWS</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/GitHub/" style="font-size: 15px;">GitHub</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/NexT/" style="font-size: 15px;">NexT</a> <a href="/tags/机器学习/" style="font-size: 15px;">机器学习</a> <a href="/tags/理论/" style="font-size: 15px;">理论</a> <a href="/tags/Windows/" style="font-size: 15px;">Windows</a> <a href="/tags/吴恩达/" style="font-size: 15px;">吴恩达</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/C/" style="font-size: 15px;">C++</a> <a href="/tags/conda/" style="font-size: 15px;">conda</a> <a href="/tags/ffmpeg/" style="font-size: 15px;">ffmpeg</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/01/09/快排，归并，堆排序算法/">快排，归并，堆排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/05/终端命令整理/">终端命令整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/13/AWS 上使用 MXNet 的环境配置/">AWS 上使用 MXNet 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/15/AI Challenger 场景分类/">AI Challenger 场景分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Ubuntu 下 PyTorch 的环境配置/">Ubuntu 下 PyTorch 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/01/Kaggle - CIFAR-10 - 图像分类/">Kaggle - CIFAR-10 - 图像分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/01/Support Vector Machine 推导/">Support Vector Machine 推导</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（三)/">吴恩达的深度学习课程笔记（三）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（二）/">吴恩达的深度学习课程笔记（二）</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/30/吴恩达的深度学习课程笔记（一）/">吴恩达的深度学习课程笔记（一）</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">DDay's blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" color="100,99,98" opacity="0.5" zIndex="-2" count="50" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
