@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>激活函数一览 | DDay's blog</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">激活函数一览</h1><a id="logo" href="/.">DDay's blog</a><p class="description"> GET HANDS DIRTY AND MAKE IT PRETTY.</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">激活函数一览</h1><div class="post-meta">Jan 14, 2018<span> | </span><span class="category"><a href="/categories/机器学习/">机器学习</a></span></div><div class="clear"><div id="toc" class="toc-article"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-非线性激活函数的作用"><span class="toc-number">1.</span> <span class="toc-text">1. 非线性激活函数的作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Sigmoid"><span class="toc-number">2.</span> <span class="toc-text">2. Sigmoid</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-tanh"><span class="toc-number">3.</span> <span class="toc-text">3. tanh</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-ReLU"><span class="toc-number">4.</span> <span class="toc-text">4. ReLU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Leaky-ReLU"><span class="toc-number">5.</span> <span class="toc-text">5. Leaky ReLU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-Parametrix-ReLU"><span class="toc-number">6.</span> <span class="toc-text">7. Parametrix ReLU</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-Swish"><span class="toc-number">7.</span> <span class="toc-text">8. Swish</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-ELU"><span class="toc-number">8.</span> <span class="toc-text">9. ELU</span></a></li></ol></div></div><div class="post-content"><p>非线性激活函数 Sigmoid、ReLU 及各种变体、ELU……</p>
+<a id="more"></a>
+<h2 id="1-非线性激活函数的作用"><a href="#1-非线性激活函数的作用" class="headerlink" title="1. 非线性激活函数的作用"></a>1. 非线性激活函数的作用</h2><ul>
+<li>如果不用激励函数，每一层输出都是上层输入的线性函数，无论神经网络有多少层，输出都是输入的线性组合。</li>
+<li>如果使用的话，激活函数给神经元引入了非线性因素，使得神经网络可以任意逼近任何非线性函数，这样神经网络就可以应用到众多的非线性模型中。</li>
+</ul>
+<h2 id="2-Sigmoid"><a href="#2-Sigmoid" class="headerlink" title="2. Sigmoid"></a>2. Sigmoid</h2><ul>
+<li>公式：$f(z)=\frac{1}{1+e^{(-z)}},f’(z)=f(z)(1-f(z))$</li>
+</ul>
+<ul>
+<li>特点：<ul>
+<li>取值范围限定在 (0,1)</li>
+<li>在特征相差比较复杂或是相差不是特别大时效果比较好。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>激活函数计算量大，反向传播求误差梯度时，求导涉及除法。</li>
+<li>反向传播时，很容易就会出现梯度消失（饱和神经元）的情况，从而无法完成深层网络的训练。</li>
+<li>Sigmoid 输出不以零为中心的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-tanh"><a href="#3-tanh" class="headerlink" title="3. tanh"></a>3. tanh</h2><ul>
+<li>公式：$f(z)=tanh(z)=\frac{e^z-e^{-z}}{e^z+e^{-z}}=2*sigmoid(2x)-1$</li>
+<li>特点：<ul>
+<li>取值范围限定在 [-1,1]</li>
+<li>tanh在特征相差明显时的效果会很好，在循环过程中会不断扩大特征效果。</li>
+<li>与 sigmoid 的区别是，tanh 是 0 均值的，因此实际应用中 tanh 会比 sigmoid 更好。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>Tanh 函数也会有梯度消失的问题，因此在饱和时也会「杀死」梯度。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-ReLU"><a href="#4-ReLU" class="headerlink" title="4. ReLU"></a>4. ReLU</h2><ul>
+<li>公式：$f(z)=max(0,z)$</li>
+<li>特点：<ul>
+<li>使网络更快速地收敛。它不会饱和，即它可以对抗梯度消失问题，至少在正区域（x&gt; 0 时）可以这样，因此神经元至少在一半区域中不会把所有零进行反向传播。由于使用了简单的阈值化（thresholding），ReLU 计算效率很高。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>ReLU 函数的输出不以零为中心（恒为正）。</li>
+<li>前向传导（forward pass）过程中，如果 x &lt; 0，则神经元保持非激活状态，且在后向传导（backward pass）中「杀死」梯度。这样权重无法得到更新，网络无法学习。当 x = 0 时，该点的梯度未定义，但是这个问题在实现中得到了解决，通过采用左侧或右侧的梯度的方式。</li>
+<li>Relu 不会对数据做幅度压缩，所以如果数据的幅度不断扩张，那么模型的层数越深，幅度的扩张也会越厉害，最终会影响模型的表现。</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-Leaky-ReLU"><a href="#5-Leaky-ReLU" class="headerlink" title="5. Leaky ReLU"></a>5. Leaky ReLU</h2><ul>
+<li>公式：$f(z)=max(0.1x,x)$</li>
+<li>特点：<ul>
+<li>当 x &lt; 0 时，它得到 0.1 的正梯度。该函数一定程度上缓解了 dead ReLU 问题。</li>
+<li>具备 ReLU 激活函数的所有特征，如计算高效、快速收敛、在正区域内不会饱和。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>该函数的结果并不连贯。</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-Parametrix-ReLU"><a href="#7-Parametrix-ReLU" class="headerlink" title="7. Parametrix ReLU"></a>7. Parametrix ReLU</h2><ul>
+<li>公式：$f(z)=max(\alpha x,x)$</li>
+<li>特点：<ul>
+<li>引入了一个随机的超参数 $\alpha$，它可以被学习，因为你可以对它进行反向传播。这使神经元能够选择负区域最好的梯度。</li>
+</ul>
+</li>
+</ul>
+<h2 id="8-Swish"><a href="#8-Swish" class="headerlink" title="8. Swish"></a>8. Swish</h2><ul>
+<li>公式：$f(z)=\frac{x}{1+e^{-x}}$</li>
+<li>特点：<ul>
+<li>Swish 激活函数的性能优于 ReLU 函数。</li>
+</ul>
+</li>
+</ul>
+<h2 id="9-ELU"><a href="#9-ELU" class="headerlink" title="9. ELU"></a>9. ELU</h2><ul>
+<li>公式：$f(z)=x\geq0 \ ? \ x \ : \ \alpha(e^x-1),\alpha&gt;0$</li>
+<li>特点：<ul>
+<li>ELU 减少了正常梯度与单位自然梯度之间的差距，从而加快了学习。</li>
+<li>在负的限制条件下能够更有鲁棒性（0均值）。</li>
+</ul>
+</li>
+</ul>
+</div><div class="tags"><a href="/tags/深度学习/">深度学习</a></div><div class="post-nav"><a href="/2018/01/14/IPV4 IPV6 科学上网/" class="pre">IPV4 IPV6 科学上网</a><a href="/2018/01/09/快排，归并，堆排序算法/" class="next">快排，归并，堆排序算法</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><a href="http://dday.top/">
+<img src="http://owinowxgh.bkt.clouddn.com/meblack2.jpg" alt="" border="0" style="margin-top:15px; border-radius: 300px;" width="180px"; height="180px"; >
+</a></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Hexo/">Hexo</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/项目整理/">项目整理</a><span class="category-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Kaggle/" style="font-size: 15px;">Kaggle</a> <a href="/tags/MXNet/" style="font-size: 15px;">MXNet</a> <a href="/tags/Gluon/" style="font-size: 15px;">Gluon</a> <a href="/tags/AWS/" style="font-size: 15px;">AWS</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/PyTorch/" style="font-size: 15px;">PyTorch</a> <a href="/tags/竞赛/" style="font-size: 15px;">竞赛</a> <a href="/tags/Hexo/" style="font-size: 15px;">Hexo</a> <a href="/tags/NexT/" style="font-size: 15px;">NexT</a> <a href="/tags/GitHub/" style="font-size: 15px;">GitHub</a> <a href="/tags/深度学习/" style="font-size: 15px;">深度学习</a> <a href="/tags/科学上网/" style="font-size: 15px;">科学上网</a> <a href="/tags/Shadowsocks/" style="font-size: 15px;">Shadowsocks</a> <a href="/tags/机器学习/" style="font-size: 15px;">机器学习</a> <a href="/tags/理论/" style="font-size: 15px;">理论</a> <a href="/tags/吴恩达/" style="font-size: 15px;">吴恩达</a> <a href="/tags/算法/" style="font-size: 15px;">算法</a> <a href="/tags/C/" style="font-size: 15px;">C++</a> <a href="/tags/conda/" style="font-size: 15px;">conda</a> <a href="/tags/ffmpeg/" style="font-size: 15px;">ffmpeg</a> <a href="/tags/Windows/" style="font-size: 15px;">Windows</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/01/17/损失函数的推导/">损失函数的推导</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/15/Gluon for MXNet 使用与概念梳理（冗长版）/">Gluon for MXNet 使用与概念梳理（冗长版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/IPV4 IPV6 科学上网/">IPV4 IPV6 科学上网</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/14/激活函数一览/">激活函数一览</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/09/快排，归并，堆排序算法/">快排，归并，堆排序算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/05/终端命令整理/">终端命令整理</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/01/01/Kaggle - 120 种狗的图像识别/">Kaggle - 120种狗的图像识别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/13/AWS 上使用 MXNet 的环境配置/">AWS 上使用 MXNet 的环境配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/15/AI Challenger 场景分类/">AI Challenger 场景分类</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/07/Ubuntu 下 PyTorch 的环境配置/">Ubuntu 下 PyTorch 的环境配置</a></li></ul></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">DDay's blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" color="100,99,98" opacity="0.5" zIndex="-2" count="50" src="//cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
